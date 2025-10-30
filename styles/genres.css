@@ -1,0 +1,88 @@
+@font-face {
+    font-family: 'Arcane';
+    src: url('../fonts/ArcaneNine.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arcane';
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../assets/bg.webp');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: white;
+    min-height: 100vh;
+}
+.page-section {
+    margin-top: 80px;
+    padding: 2rem;
+}
+
+.page-section.active {
+    display: block;
+}
+/* Genres Section */
+.genres-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.genre-card {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 2rem;
+    border-radius: 15px;
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    backdrop-filter: blur(10px);
+    text-align: center;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.genre-card:hover {
+    transform: translateY(-5px);
+    border-color: #ff6b6b;
+    box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+}
+
+.genre-card h3 {
+    color: #ff6b6b;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.genre-card p {
+    opacity: 0.8;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+@media (max-width: 375px) {
+    .nav-links {
+        display: none;
+    }
+    .hamburger {
+        display: flex;
+    }
+    .mobile-menu {
+        display: block;
+    }
+
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .hero h2 {
+        font-size: 1.5rem;
+    }
+
+    .anime-grid {
+        grid-template-columns: 1fr;
+    }
+}

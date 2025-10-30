@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AniMatch - Discover Your Next Anime Obsession</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('wp1944208-natsu-and-lucy-wallpapers.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        /* Sticky effect with enhanced styling */
+        nav.scrolled {
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 2px 20px rgba(255, 107, 107, 0.3);
+            padding: 0.8rem 2rem;
+        }
+
+        nav.scrolled .logo {
+            transform: scale(0.9);
+            color: #ff8e8e;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ff6b6b;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #ff6b6b;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: #ff6b6b;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #ff6b6b;
+            margin: 3px 0;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 300px;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            transition: right 0.3s ease;
+            z-index: 999;
+            padding-top: 80px;
+        }
+
+        .mobile-menu.active {
+            right: 0;
+        }
+
+        .mobile-menu a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 107, 107, 0.2);
+        }
+
+        .mobile-menu a:hover,
+        .mobile-menu a.active {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+            padding-left: 2.5rem;
+        }
+
+        /* Overlay for mobile menu */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+            transition: opacity 0.3s ease;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        /* Page Sections */
+        .page-section {
+            display: none;
+            margin-top: 80px;
+            padding: 2rem;
+            min-height: calc(100vh - 80px);
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* HOME PAGE - Simplified without recommendation form */
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #ff6b6b;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .hero h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            margin: 2rem 0;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        /* Recommendation Form (moved to services) */
+        .recommendation-form {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 4rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            border: 2px solid #ff6b6b;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-align: center;
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        /* Top Animes Section */
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #ff6b6b;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .anime-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .anime-card {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .anime-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+        }
+
+        .anime-card h3 {
+            color: #ff6b6b;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .anime-card .genre {
+            color: #ffd93d;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .anime-card .rating {
+            color: #4ecdc4;
+            margin-bottom: 1rem;
+        }
+
+        .anime-card p {
+            opacity: 0.9;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #ff6b6b;
+            padding: 8px 20px;
+            border: 2px solid #ff6b6b;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        /* Process Steps */
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background: #ff6b6b;
+            color: white;
+            border-radius: 50%;
+            line-height: 50px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .step h3 {
+            margin-bottom: 1rem;
+            color: #ff6b6b;
+        }
+
+        /* ABOUT PAGE */
+        .about-content {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 3rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            margin-bottom: 2rem;
+        }
+
+        .about-content h2 {
+            color: #ff6b6b;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            text-align: center;
+        }
+
+        .about-content p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .feature-card {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            text-align: center;
+        }
+
+        .feature-card h3 {
+            color: #ff6b6b;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .feature-card p {
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        /* SERVICES PAGE */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .service-card {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 2.5rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .service-icon {
+            width: 80px;
+            height: 80px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+        }
+
+        .service-card h3 {
+            color: #ff6b6b;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .service-card p {
+            opacity: 0.9;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Featured Service (Recommendation) */
+        .featured-service {
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(255, 142, 142, 0.1));
+            border: 2px solid #ff6b6b;
+            margin-bottom: 3rem;
+        }
+
+        /* GENRES PAGE */
+        .genres-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .genre-card {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .genre-card:hover {
+            transform: translateY(-5px);
+            border-color: #ff6b6b;
+            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+        }
+
+        .genre-card h3 {
+            color: #ff6b6b;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .genre-card p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero h2 {
+                font-size: 1.5rem;
+            }
+
+            .anime-grid,
+            .services-grid,
+            .genres-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .process-steps {
+                grid-template-columns: 1fr;
+            }
+
+            nav {
+                padding: 1rem;
+            }
+
+            nav.scrolled {
+                padding: 0.8rem 1rem;
+            }
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.9);
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo">AniMatch</div>
+            
+            <!-- Desktop Navigation -->
+            <ul class="nav-links">
+                <li><a href="#" onclick="showPage('home')" class="nav-link active">HOME</a></li>
+                <li><a href="#" onclick="showPage('about')" class="nav-link">ABOUT</a></li>
+                <li><a href="#" onclick="showPage('services')" class="nav-link">SERVICES</a></li>
+                <li><a href="#" onclick="showPage('genres')" class="nav-link">GENRES</a></li>
+            </ul>
+
+            <!-- Hamburger Menu -->
+            <div class="hamburger" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="overlay" onclick="closeMobileMenu()"></div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#" onclick="showPage('home')" class="mobile-nav-link active">HOME</a>
+        <a href="#" onclick="showPage('about')" class="mobile-nav-link">ABOUT</a>
+        <a href="#" onclick="showPage('services')" class="mobile-nav-link">SERVICES</a>
+        <a href="#" onclick="showPage('genres')" class="mobile-nav-link">GENRES</a>
+    </div>
+
+    <!-- HOME PAGE - Simplified welcome page -->
+    <section id="home" class="page-section active">
+        <div class="container">
+            <div class="hero">
+                <h1>HEY WEEBS</h1>
+                <h2>DISCOVER YOUR NEXT ANIME OBSESSION</h2>
+                <p>Simplify anime discovery for everyone</p>
+                <a href="#" onclick="showPage('services')" class="cta-button">Get Anime Recommendations</a>
+            </div>
+
+            <div class="top-animes">
+                <h2 class="section-title">Top Animes</h2>
+                <div class="anime-grid">
+                    <div class="anime-card">
+                        <h3>Attack on Titan</h3>
+                        <div class="genre">Action, Drama</div>
+                        <div class="rating">★★★★★ 9.0/10</div>
+                        <p>Humanity fights for survival against giant humanoid Titans in this intense and emotional series.</p>
+                        <button class="btn-secondary">Learn More</button>
+                    </div>
+                    
+                    <div class="anime-card">
+                        <h3>Demon Slayer</h3>
+                        <div class="genre">Action, Supernatural</div>
+                        <div class="rating">★★★★☆ 8.7/10</div>
+                        <p>A young boy becomes a demon slayer to save his sister and avenge his family.</p>
+                        <button class="btn-secondary">Learn More</button>
+                    </div>
+                    
+                    <div class="anime-card">
+                        <h3>One Piece</h3>
+                        <div class="genre">Adventure, Comedy</div>
+                        <div class="rating">★★★★★ 9.2/10</div>
+                        <p>Follow Monkey D. Luffy's epic journey to become the Pirate King.</p>
+                        <button class="btn-secondary">Learn More</button>
+                    </div>
+                    
+                    <div class="anime-card">
+                        <h3>Your Name</h3>
+                        <div class="genre">Romance, Drama</div>
+                        <div class="rating">★★★★★ 8.4/10</div>
+                        <p>A beautiful story of two teenagers who mysteriously swap bodies.</p>
+                        <button class="btn-secondary">Learn More</button>
+                    </div>
+                    
+                    <div class="anime-card">
+                        <h3>Death Note</h3>
+                        <div class="genre">Psychological, Thriller</div>
+                        <div class="rating">★★★★☆ 8.6/10</div>
+                        <p>A high school student discovers a supernatural notebook that can kill anyone.</p>
+                        <button class="btn-secondary">Learn More</button>
+                    </div>
+                    
+                    <div class="anime-card">
+                        <h3>Spirited Away</h3>
+                        <div class="genre">Adventure, Family</div>
+                        <div class="rating">★★★★★ 9.3/10</div>
+                        <p>A young girl enters a world ruled by gods and witches where she must save her parents.</p>
+                        <button class="btn-secondary">Learn More</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT PAGE -->
+    <section id="about" class="page-section">
+        <div class="container">
+            <div class="about-content">
+                <h2>About AniMatch</h2>
+                <p>Welcome to AniMatch, the ultimate anime recommendation platform designed by anime lovers, for anime lovers. We understand the struggle of finishing an amazing anime series and not knowing what to watch next.</p>
+                
+                <p>Our mission is to simplify anime discovery for everyone. Whether you're a seasoned otaku or just starting your anime journey, AniMatch uses advanced algorithms to analyze your preferences and suggest anime that perfectly match your taste.</p>
+                
+                <p>Founded in 2025, AniMatch has helped thousands of anime enthusiasts discover their next obsession. Our database contains information about thousands of anime series, movies, and OVAs across all genres and demographics.</p>
+                
+                <p>Join our community of anime lovers and never run out of great shows to watch again!</p>
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>🎯 Smart Recommendations</h3>
+                    <p>Our AI-powered system analyzes genre preferences, themes, and viewing patterns to suggest anime that match your unique taste.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>📚 Vast Database</h3>
+                    <p>Access recommendations from our extensive database of over 10,000 anime titles spanning decades of animation history.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>👥 Community Driven</h3>
+                    <p>Benefit from ratings and reviews from our passionate community of anime enthusiasts worldwide.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🔄 Always Updated</h3>
+                    <p>Our database is constantly updated with the latest anime releases and seasonal shows.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICES PAGE - Now includes the anime recommendation feature -->
+    <section id="services" class="page-section">
+        <div class="container">
+            <h2 class="section-title">Our Services</h2>
+            
+            <!-- Featured Service: Anime Recommendation -->
+            <div class="service-card featured-service">
+                <div class="service-icon">🎯</div>
+                <h3>Get Your Anime Recommendation</h3>
+                <p>Our flagship service! Enter an anime you've watched and get personalized recommendations based on genre analysis and viewing patterns.</p>
+                
+                <div class="recommendation-form">
+                    <div class="form-group">
+                        <input type="text" id="animeInput" placeholder="Enter your last watched anime...">
+                    </div>
+                    <button class="btn-primary" onclick="getRecommendation()">Get Recommendation</button>
+                </div>
+
+                <div class="process-steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h3>Enter your last anime</h3>
+                        <p>Tell us about an anime you recently watched and enjoyed</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3>We analyze genre</h3>
+                        <p>Our system analyzes the genre and characteristics of your anime</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3>Get similar animes</h3>
+                        <p>Receive personalized recommendations based on your preferences</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other Services -->
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">🎭</div>
+                    <h3>Genre Exploration</h3>
+                    <p>Discover new genres and expand your anime horizons with our comprehensive genre-based recommendation system.</p>
+                    <button class="btn-secondary">Learn More</button>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">⭐</div>
+                    <h3>Rating & Reviews</h3>
+                    <p>Read detailed reviews and ratings from our community to make informed decisions about your next anime watch.</p>
+                    <button class="btn-secondary">Learn More</button>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">📱</div>
+                    <h3>Watchlist Management</h3>
+                    <p>Create and manage your personal watchlist, track your viewing progress, and never lose track of your anime journey.</p>
+                    <button class="btn-secondary">Learn More</button>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">🔥</div>
+                    <h3>Trending Updates</h3>
+                    <p>Stay updated with the latest trending anime, seasonal releases, and popular discussions in the anime community.</p>
+                    <button class="btn-secondary">Learn More</button>
+                </div>
+                
+                <div class="service-card">
+                    <div class="service-icon">🎨</div>
+                    <h3>Custom Filters</h3>
+                    <p>Use advanced filters to find anime by studio, year, episode count, rating, and many other criteria.</p>
+                    <button class="btn-secondary">Learn More</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GENRES PAGE -->
+    <section id="genres" class="page-section">
+        <div class="container">
+            <h2 class="section-title">Explore Anime Genres</h2>
+            
+            <div class="genres-grid">
+                <div class="genre-card">
+                    <h3>🗾 Action</h3>
+                    <p>High-energy anime with intense battles, martial arts, and thrilling sequences.</p>
+                </div>
+                
+                <div class="genre-card">
+                    <h3>🏰 Adventure</h3>
+                    <p>Epic journeys, exploration, and quests in fantastical worlds.</p>
+                </div>
+                
+                <div class="genre-card">
+                    <h3>😄 Comedy</h3>
+                    <p>Light-hearted series designed to entertain and make you laugh.</p>
+                </div>
+                
+                <div class="genre-card">
+                    <h3>😢 Drama</h3>
+                    <p>Emotional storytelling with complex characters and deep themes.</p>
+                </div>
+                
+                <div class="genre-card">
+                    <h3>🧙‍♂️ Fantasy</h3>
+                    <p>Magical worlds with supernatural elements and mythical creatures.</p>
+                </div>
+                
+                <div class="genre-card">
+                    <h3>😱 Horror</h3>
+                    <p>Dark and scary anime designed to frighten and create suspense.</p>
+                </div>
+                
+                <div class="genre-card">
+                    <h3>💖 Romance</h3>
+                    <p>Love stories and relationships between characters.</p>
+                </div>
+                
+                <div class="genre-card">
+                    <h3>🚀 Sci-Fi</h3>
+                    <p>Futuristic settings with advanced technology and space exploration.</p>
+                </div>
+                
+                <div class="genre-card">
+                    <h3>🏫 School</h3>
+                    <p>Stories set in academic environments with student life themes.</p>
+                </div>
+                
+                <div class="genre-card">
+                    <h3>🎵 Music</h3>
+                    <p>Anime centered around musical performances and artists.</p>
+                </div>
+                
+                <div class="genre-card">
+                    <h3>🏃‍♂️ Sports</h3>
+                    <p>Athletic competitions and team dynamics in various sports.</p>
+                </div>
+                
+                <div class="genre-card">
+                    <h3>🔍 Mystery</h3>
+                    <p>Puzzles, investigations, and suspenseful storytelling.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025 AniMatch. All rights reserved. | Discover your next anime obsession!</p>
+        </div>
+    </footer>
+
+    <script>
+        // Sticky Navbar with Scroll Effects
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const hamburger = document.querySelector('.hamburger');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const overlay = document.querySelector('.overlay');
+            
+            hamburger.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+            overlay.classList.toggle('active');
+            
+            // Prevent body scroll when menu is open
+            document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : 'auto';
+        }
+
+        function closeMobileMenu() {
+            const hamburger = document.querySelector('.hamburger');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const overlay = document.querySelector('.overlay');
+            
+            hamburger.classList.remove('active');
+            mobileMenu.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Page Navigation
+        function showPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page-section');
+            pages.forEach(page => page.classList.remove('active'));
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Update navigation active state (desktop)
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update navigation active state (mobile)
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+            mobileNavLinks.forEach(link => link.classList.remove('active'));
+            
+            // Find corresponding mobile link
+            const mobileLink = document.querySelector(`.mobile-nav-link[onclick="showPage('${pageId}')"]`);
+            if (mobileLink) {
+                mobileLink.classList.add('active');
+            }
+            
+            // Close mobile menu if open
+            closeMobileMenu();
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Anime Recommendation Function (now in services)
+        function getRecommendation() {
+            const animeInput = document.getElementById('animeInput').value;
+            if (animeInput.trim() === '') {
+                alert('Please enter an anime name!');
+                return;
+            }
+            
+            // Simulate recommendation process
+            alert(`🎯 Analyzing "${animeInput}"...\n\n✨ Our AI is processing the genre, themes, and characteristics of this anime to find perfect matches for you!\n\n🎉 Your personalized recommendations will be generated based on:\n• Genre similarities\n• Theme analysis\n• Community ratings\n• Viewing patterns\n\nThank you for using AniMatch's recommendation service!`);
+            
+            // Here you would typically make an API call to your backend
+            // For now, this is just a placeholder
+        }
+
+        // Add interactivity to genre cards
+        document.querySelectorAll('.genre-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const genre = this.querySelector('h3').textContent;
+                alert(`You selected ${genre}! This would show anime recommendations for this genre.`);
+            });
+        });
+
+        // Add interactivity to anime cards
+        document.querySelectorAll('.anime-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const title = this.querySelector('h3').textContent;
+                alert(`You clicked on ${title}! This would normally show more details about this anime.`);
+            });
+        });
+
+        // Close mobile menu when clicking on mobile nav links
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', function() {
+                setTimeout(closeMobileMenu, 100);
+            });
+        });
+    </script>
+</body>
+</html>

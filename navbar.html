@@ -1,0 +1,31 @@
+<script src="js/nav.js"></script>
+    <nav id="navbar">
+    <div class="nav-cnt">
+    <div class="logo">
+        <img src="assets/logo.webp" alt="AniMatch Logo" class="logo-img">
+        <span class="logo-text">AniMatch</span>
+    </div>
+        <ul class="nav-links">
+            <li><a href="index.html" class="nav-link">HOME</a></li>
+            <li><a href="about.html" class="nav-link">ABOUT</a></li>
+            <li><a href="services.html" class="nav-link">SERVICES</a></li>
+            <li><a href="genres.html" class="nav-link">GENRES</a></li>
+        </ul>
+        <div class="hamburger" onclick="toggleMobileMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+</nav>
+
+<!-- Mobile Menu Overlay -->
+<div class="overlay" onclick="closeMobileMenu()"></div>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+    <a href="index.html" class="mobile-nav-link">HOME</a>
+    <a href="about.html" class="mobile-nav-link">ABOUT</a>
+    <a href="services.html" class="mobile-nav-link">SERVICES</a>
+    <a href="genres.html" class="mobile-nav-link">GENRES</a>
+</div>
